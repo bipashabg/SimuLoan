@@ -3,6 +3,10 @@ Turn real assets into digital value.
 
 This decentralized lending dApp allows users to tokenize dummy versions of real-world assets and use them as collateral for loans and provide a simulation for real world asset trading instead of using Crypto. Built on Polygon’s zkEVM Cardano testnet, the application mints ERC-721 NFTs representing tokenized assets and securely stores metadata on IPFS via Lighthouse. No need to sign up or log in. Simply connect your wallet, tokenize assets, and request loans. Enjoy the ease of a fully decentralized platform.
 
+![ ](logo_with_bg.png)
+
+![ ](workflow.png)
+
 ## Features
 
 - **Real-world Asset Tokenization Concept**: Users can tokenize assets as NFTs (ERC-721).
