@@ -12,28 +12,28 @@ const AboutSectionTwo = () => {
     {
       id: 1,
       title: "Bipasha",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      text: "Problem maker and problem solver ^^",
       image: bipasha,
       imageDark: bipasha,
     },
     {
       id: 2,
       title: "Shankar",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.",
+      text: "Buffer duffer",
       image: shankar,
       imageDark: shankar,
     },
     {
       id: 3,
       title: "Shruti",
-      text: "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt consectetur adipiscing elit setim.",
+      text: "Top 10 ways to win a hackathon",
       image: shruti,
       imageDark: shruti,
     },
     {
       id: 4,
       title: "Srija",
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.",
+      text: "Are you a null reference?",
       image: srija,
       imageDark: srija,
     },
@@ -45,7 +45,7 @@ const AboutSectionTwo = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
-    }, 8000); // Change slide every 8 seconds
+    }, 10000); // Change slide every 8 seconds
 
     return () => clearInterval(interval); // Clear interval on unmount
   }, [cards.length]);
