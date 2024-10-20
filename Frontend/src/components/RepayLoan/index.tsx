@@ -1,122 +1,228 @@
 "use client"
-import { useState } from "react";
-import SectionTitle from "../Common/SectionTitle";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const RepayLoan = () => {
-  // State to manage payment amount and method
-  const [paymentAmount, setPaymentAmount] = useState("");
-  const paymentMethod="Wallet";
+const ethers = require('ethers');
+import { InjectedConnector } from "@web3-react/injected-connector";
+import ThemeToggler from "../Header/ThemeToggler";
+import menuData from "../Header/menuData";
+// import ThemeToggler from "../Header/ThemeToggler";
 
-  // Function to handle repayment option click
-  const handleRepaymentOption = (amount) => {
-    setPaymentAmount(amount);
+const injected = new InjectedConnector({
+  supportedChainIds: [137, 80001], // Polygon Mainnet and Mumbai Testnet
+});
+
+const Header = () => {
+  // Navbar toggle
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const navbarToggleHandler = () => {
+    setNavbarOpen(!navbarOpen);
   };
 
+  // Sticky Navbar
+  const [sticky, setSticky] = useState(false);
+  const handleStickyNavbar = () => {
+    if (window.scrollY >= 80) {
+      setSticky(true);
+    } else {
+      setSticky(false);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleStickyNavbar);
+  }, []);
+
+  // submenu handler
+  const [openIndex, setOpenIndex] = useState(-1);
+  const handleSubmenu = (index) => {
+    if (openIndex === index) {
+      setOpenIndex(-1);
+    } else {
+      setOpenIndex(index);
+    }
+  };
+
+  const usePathName = usePathname();
+
+  // Connect to Wallet Handler
+  const connectWalletHandler = async () => {
+    try {
+      if (typeof window.ethereum !== "undefined") {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const address = await (await signer).getAddress();
+        setWalletAddress(address);
+      } else {
+        setErrorMessage("Please install MetaMask!");
+      }
+    } catch (error) {
+      setErrorMessage("Failed to connect wallet. Try again.");
+    }
+  };
+
+  // Disconnect Wallet Handler
+  const disconnectWalletHandler = () => {
+    setWalletAddress("");
+    setErrorMessage(""); // Clear any error message if needed
+  };
+
+  // Get current wallet connected
+  const getCurrentWalletConnected = async () => {
+    if (window.ethereum) {
+      try {
+        const addressArray = await window.ethereum.request({
+          method: "eth_accounts",
+        });
+        if (addressArray.length > 0) {
+          setWalletAddress(addressArray[0]);
+        } else {
+          setErrorMessage("🦊 Connect to Metamask using the top right button.");
+        }
+      } catch (err) {
+        setErrorMessage("😥 " + err.message);
+      }
+    } else {
+      setErrorMessage(
+        "🦊 You must install Metamask, a virtual Ethereum wallet, in your browser. " +
+        "You can download it from: https://metamask.io/download.html"
+      );
+    }
+  };
+
+  useEffect(() => {
+    getCurrentWalletConnected();
+  }, []);
+
   return (
-    <section
-      id="repay-loan"
-      className="bg-black py-16 md:py-20 lg:py-28"
-    >
-      <div className="container max-w-5xl mx-auto">
-        <SectionTitle
-          title="Repay Your Loan"
-          paragraph="Review your loan details and make a repayment with ease."
-          center
-        />
-
-        {/* Loan Summary */}
-        <div className="mb-12">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 transition-transform hover:scale-105 duration-300">
-            <h3 className="text-xl font-bold mb-4 text-primary">Loan Summary</h3>
-            <ul className="text-gray-600 dark:text-gray-300">
-              <li className="mb-2"><strong>Loan Amount:</strong> $10,000</li>
-              <li className="mb-2"><strong>Interest Rate:</strong> 5%</li>
-              <li className="mb-2"><strong>Due Date:</strong> December 15, 2024</li>
-              <li className="mb-2"><strong>Total Amount Due:</strong> $10,500</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Repayment Options */}
-        <div className="mb-12">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 transition-transform hover:scale-105 duration-300">
-            <h3 className="text-xl font-bold mb-4 text-primary">Repayment Options</h3>
-            <ul className="space-y-2">
-              <li
-                className="text-gray-700 dark:text-gray-300 bg-primary/10 py-3 px-4 rounded-md cursor-pointer hover:bg-primary/20 transition"
-                onClick={() => handleRepaymentOption(10500)} // Full amount
+    <>
+      <header
+        className={`header left-0 top-0 z-40 flex w-full items-center ${
+          sticky
+            ? "dark:bg-gray-dark dark:shadow-sticky-dark fixed z-[9999] bg-white !bg-opacity-80 shadow-sticky backdrop-blur-sm transition"
+            : "absolute bg-transparent"
+        }`}
+      >
+        <div className="container">
+          <div className="relative -mx-4 flex items-center justify-between">
+            <div className="w-60 max-w-full px-4 xl:mr-12">
+              <Link
+                href="/"
+                className={`header-logo block w-full ${
+                  sticky ? "py-5 lg:py-2" : "py-8"
+                } `}
               >
-                Pay Full Amount
-              </li>
-              <li
-                className="text-gray-700 dark:text-gray-300 bg-primary/10 py-3 px-4 rounded-md cursor-pointer hover:bg-primary/20 transition"
-                onClick={() => handleRepaymentOption(500)} // Minimum due
-              >
-                Pay Minimum Due: $500
-              </li>
-              <li
-                className="text-gray-700 dark:text-gray-300 bg-primary/10 py-3 px-4 rounded-md cursor-pointer hover:bg-primary/20 transition"
-                onClick={() => setPaymentAmount("")} // Custom amount
-              >
-                Custom Amount
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Repayment Form */}
-        <div className="mb-12">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 transition-transform hover:scale-105 duration-300">
-            <h3 className="text-xl font-bold mb-4 text-primary">Enter Payment Details</h3>
-            <form>
-              <div className="mb-6">
-                <label htmlFor="paymentAmount" className="block mb-2 text-gray-700 dark:text-gray-300">
-                  Payment Amount
-                </label>
-                <input
-                  type="number"
-                  id="paymentAmount"
-                  placeholder="Enter payment amount"
-                  value={paymentAmount} // Dynamically updates based on repayment option selected
-                  onChange={(e) => setPaymentAmount(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-700 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                <Image
+                  src="/images/logo/logo-2.svg"
+                  alt="logo"
+                  width={140}
+                  height={30}
+                  className="w-full dark:hidden"
                 />
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="paymentMethod" className="block mb-2 text-gray-700 dark:text-gray-300">
-                  Payment Method
-                </label>
-                <select
-                  id="paymentMethod"
-                  value={paymentMethod}
-                  
-                  className="w-full border border-gray-300 dark:border-gray-700 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                <Image
+                  src="/images/logo/logo.svg"
+                  alt="logo"
+                  width={140}
+                  height={30}
+                  className="hidden w-full dark:block"
+                />
+              </Link>
+            </div>
+            <div className="flex w-full items-center justify-between px-4">
+              <div>
+                <button
+                  onClick={navbarToggleHandler}
+                  id="navbarToggler"
+                  aria-label="Mobile Menu"
+                  className="absolute right-4 top-1/2 block translate-y-[-50%] rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
                 >
-                  <option value="wallet">Wallet</option>
-                  
-                </select>
+                  <span
+                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
+                      navbarOpen ? " top-[7px] rotate-45" : " "
+                    }`}
+                  />
+                  <span
+                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
+                      navbarOpen ? "opacity-0 " : " "
+                    }`}
+                  />
+                  <span
+                    className={`relative my-1.5 block h-0.5 w-[30px] bg-black transition-all duration-300 dark:bg-white ${
+                      navbarOpen ? " top-[-8px] -rotate-45" : " "
+                    }`}
+                  />
+                </button>
+                <nav
+                  id="navbarCollapse"
+                  className={`navbar absolute right-0 z-30 w-[250px] rounded border-[.5px] border-body-color/50 bg-white px-6 py-4 duration-300 dark:border-body-color/20 dark:bg-dark lg:visible lg:static lg:w-auto lg:border-none lg:!bg-transparent lg:p-0 lg:opacity-100 ${
+                    navbarOpen
+                      ? "visibility top-full opacity-100"
+                      : "invisible top-[120%] opacity-0"
+                  }`}
+                >
+                  <ul className="block lg:flex lg:space-x-12">
+                    {menuData.map((menuItem, index) => (
+                      <li key={index} className="group relative">
+                        {menuItem.path ? (
+                          <Link
+                            href={menuItem.path}
+                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                              usePathName === menuItem.path
+                                ? "text-primary dark:text-white"
+                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                            }`}
+                          >
+                            {menuItem.title}
+                          </Link>
+                        ) : (
+                          <p
+                            onClick={() => handleSubmenu(index)}
+                            className="flex cursor-pointer items-center justify-between py-2 text-base text-dark group-hover:text-primary dark:text-white/70 dark:group-hover:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6"
+                          >
+                            {menuItem.title}
+                            <span className="pl-3"></span>
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               </div>
-
-              <button className="w-full bg-gradient-to-r from-primary to-primary-dark text-white px-8 py-3 rounded-md shadow-lg hover:opacity-90 transition-opacity duration-300">
-                Submit Payment
-              </button>
-            </form>
+              <div className="flex items-center justify-end pr-16 lg:pr-0">
+                {walletAddress ? (
+                  <>
+                    <span className="px-7 py-3 text-base font-medium text-dark dark:text-white">
+                      {walletAddress.substring(0, 6)}...
+                      {walletAddress.substring(walletAddress.length - 4)}
+                    </span>
+                    <button
+                      onClick={disconnectWalletHandler}
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover rounded-md bg-red-600 py-3 px-7 text-base font-medium text-white transition"
+                    >
+                      Disconnect
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={connectWalletHandler}
+                    className="ease-in-up shadow-btn hover:shadow-btn-hover rounded-md bg-primary py-3 px-7 text-base font-medium text-white transition"
+                  >
+                    Connect Wallet
+                  </button>
+                )}
+                <ThemeToggler />
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Confirmation Section */}
-        <div className="mt-12">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 transition-transform hover:scale-105 duration-300">
-            <h3 className="text-xl font-bold mb-4 text-primary">Payment Confirmation</h3>
-            <p className="text-gray-700 dark:text-gray-300">
-              Your payment has been successfully processed. Remaining balance: $0.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+      </header>
+    </>
   );
 };
 
-export default RepayLoan;
+export default Header;
