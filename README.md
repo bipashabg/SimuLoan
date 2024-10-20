@@ -6,7 +6,7 @@ This decentralized lending dApp allows users to tokenize dummy versions of real-
 
 ![logo_with_bg](https://github.com/user-attachments/assets/9c96ab3a-31a0-4ffa-9053-30aa65390692)
 
-##Workflow
+## Workflow
 
 ![workflow](https://github.com/user-attachments/assets/60f3bd6e-cb22-42ce-a5da-5a2ff0b593e1)
 
