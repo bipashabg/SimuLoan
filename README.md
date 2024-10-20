@@ -35,8 +35,8 @@ This decentralized lending dApp allows users to tokenize dummy versions of real-
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/yourproject.git
-   cd yourproject
+   git clone https://github.com/bipashabg/SimuLoan.git
+   cd SimuLoan
    ```
 
 2. Install dependencies:
@@ -68,7 +68,7 @@ This decentralized lending dApp allows users to tokenize dummy versions of real-
 1. Deploy the smart contract to the zkEVM Cardano testnet:
 
    ```bash
-   npx hardhat run scripts/deploy.js --network zkevm
+   npx hardhat run scripts/deploy.cjs --network zkEVMTestnet
    ```
 
 2. Update the `.env` file with your zkEVM testnet details.
