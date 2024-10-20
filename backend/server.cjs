@@ -5,10 +5,9 @@ const path = require('path');
 const app = express();
 const port = 5000;
 
-// Middleware to parse JSON requests
+
 app.use(express.json());
 
-// Function to download a file from Lighthouse using the CID
 const downloadFile = async (cid, savePath) => {
   try {
     const response = await fetch(`https://gateway.lighthouse.storage/ipfs/${cid}`);
@@ -24,17 +23,17 @@ const downloadFile = async (cid, savePath) => {
   }
 };
 
-// API endpoint to retrieve the file using CID
+
 app.get('/download/:cid', async (req, res) => {
   const { cid } = req.params;
-  const fileName = `downloaded_${cid}.ext`; // Specify appropriate file extension if needed
-  const filePath = path.join(__dirname, 'downloads', fileName); // Adjust this directory
+  const fileName = `downloaded_${cid}.ext`;
+  const filePath = path.join(__dirname, 'downloads', fileName); 
 
   try {
-    // Call the downloadFile function to fetch and save the file locally
+    
     const savedFilePath = await downloadFile(cid, filePath);
 
-    // Send the file to the user for download
+   
     res.download(savedFilePath, fileName, (err) => {
       if (err) {
         console.error('Error sending file:', err);
@@ -46,7 +45,7 @@ app.get('/download/:cid', async (req, res) => {
   }
 });
 
-// Start the server
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

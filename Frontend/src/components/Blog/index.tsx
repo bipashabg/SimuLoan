@@ -123,9 +123,8 @@ const RepayLoan = () => {
                   onChange={(e) => setPaymentMethod(e.target.value)}
                   className="w-full border border-gray-300 dark:border-gray-700 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="credit-card">Credit Card</option>
-                  <option value="bank-transfer">Bank Transfer</option>
-                  <option value="crypto">Cryptocurrency</option>
+                  <option value="credit-card">Browser Wallet</option>
+                  
                 </select>
               </div>
 
