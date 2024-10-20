@@ -1,7 +1,8 @@
 "use client";
 import { upload } from "@lighthouse-web3/sdk";
-import { ethers } from "ethers";
+const ethers = require('ethers');
 import { useEffect, useState } from "react";
+import Swal from 'sweetalert';
 
 const apiKey = "2d49449a.0394a4e240124eb691d00f861ca23d3f";
 
@@ -18,10 +19,11 @@ const categories = [
 const connectWalletHandler = async (setWalletAddress, setErrorMessage) => {
   try {
     if (typeof window.ethereum !== "undefined") {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
+      // Using Web3Provider for ethers.js version 5.x
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []); // Request account access
       const signer = provider.getSigner();
-      const address = await (await signer).getAddress();
+      const address = await signer.getAddress();
       localStorage.setItem("walletAddress", address);
       setWalletAddress(address);
       console.log("Wallet connected:", address);
@@ -30,6 +32,7 @@ const connectWalletHandler = async (setWalletAddress, setErrorMessage) => {
     }
   } catch (error) {
     setErrorMessage("Failed to connect wallet. Try again.");
+    console.error(error);
   }
 };
 
@@ -61,28 +64,21 @@ const Minter = () => {
 
     const onMintPressed = async (e) => {
       e.preventDefault();
-    
+      
       // Ensure all required fields and file are present
       if (!file || !assetName || !tokenValue || !category) {
         alert("Please fill all required fields and upload a file");
         return;
       }
     
-      console.log("File to upload:", file);
-    
       try {
         // Upload the file to Lighthouse
         const response = await upload([file], apiKey);
-        
     
-        // Check if response exists and contains file hash
         if (response && response.data && response.data.Hash) {
           const fileUrl = response.data;
-          const name=fileUrl.Name;
-          localStorage.setItem("name",name);
-          
-          // localStorage.setItem("fileUrl",fileUrl);
-          console.log(fileUrl);
+          const name = fileUrl.Name;
+          localStorage.setItem("name", name);
     
           // Prepare asset data for tokenization
           const assetData = {
@@ -94,12 +90,24 @@ const Minter = () => {
             walletAddress,   // User's wallet address
           };
     
-          console.log("Asset Data to be sent for tokenization:", assetData);
+          // Logic to send assetData to backend (optional)
     
-          // Add logic to send assetData to the backend for tokenization
-          
-    
-        } 
+          // Display success message
+          Swal({
+            title: "Success",
+            text: "Tokenized asset successfully",
+            icon: "success",
+            buttons: {
+              confirm: {
+                text: "OK",
+                value: true,
+                visible: true,
+                className: "swal-button",
+                closeModal: true,
+              },
+            },
+          });
+        }
       } catch (error) {
         console.error("Error uploading file:", error);
         alert("An error occurred while uploading the file. Please check the console for details.");

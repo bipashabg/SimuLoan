@@ -22,11 +22,8 @@
     "@web3-react/injected-connector": "^6.0.7",
     "axios": "^1.7.7",
     "caniuse-lite": "^1.0.30001669",
-
-    "clsx": "^2.1.1",
-
     "circomlib": "^2.0.5",
-
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.1.0",
@@ -41,13 +38,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal-video": "^2.0.1",
-
+    "snarkjs": "^0.7.5",
+    "sweetalert": "^2.1.2",
     "tailwind-merge": "^2.5.4",
     "three": "^0.169.0",
-
-    "snarkjs": "^0.7.5",
     "wagmi": "^2.12.20"
-
   },
   "devDependencies": {
     "@types/node": "^20.8.9",

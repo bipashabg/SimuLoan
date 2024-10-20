@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import SectionTitle from "../Common/SectionTitle";
 import axios from "axios";
-import { ethers } from "ethers"; // Make sure you have ethers.js installed
+const ethers = require('ethers');
 
 const ApplyLoan = () => {
   const [loanAmount, setLoanAmount] = useState("");

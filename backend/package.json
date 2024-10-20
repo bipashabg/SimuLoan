@@ -5,7 +5,9 @@
     "hardhat": "^2.22.13"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.1.0"
+    "@openzeppelin/contracts": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
   },
   "type": "module"
 }
